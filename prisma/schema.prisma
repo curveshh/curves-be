@@ -1,0 +1,388 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+}
+
+enum PageKey {
+  HOME
+  ABOUT
+  CONTACT
+}
+
+enum PublicationStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ProgramLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  ALL_LEVELS
+}
+
+enum ContactStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+  SPAM
+}
+
+enum MenuType {
+  PAGE
+  LINK
+}
+
+enum PromotionBgType {
+  gradient
+  image
+}
+
+enum BannerBgType {
+  GRADIENT
+  IMAGE
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  password  String
+  name      String
+  role      UserRole   @default(EDITOR)
+  avatarUrl String?
+  isActive  Boolean    @default(true)
+  newsPosts NewsPost[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("users")
+}
+
+model SiteSetting {
+  id             String   @id @default(uuid())
+  siteName       String
+  tagline        String?
+  logoUrl        String?
+  faviconUrl     String?
+  email          String?
+  hotline        String?
+  address        String?
+  facebookUrl    String?
+  instagramUrl   String?
+  youtubeUrl     String?
+  tiktokUrl      String?
+  googleMapsUrl  String?
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+model SitePage {
+  id              String            @id @default(uuid())
+  key             PageKey           @unique
+  title           String
+  slug            String            @unique
+  excerpt         String?
+  content         String?
+  heroTitle       String?
+  heroDescription String?
+  heroImageUrl    String?
+  seoTitle        String?
+  seoDescription  String?
+  status          PublicationStatus @default(DRAFT)
+  publishedAt     DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([status, publishedAt])
+  @@map("site_pages")
+}
+
+model ProgramCategory {
+  id          String            @id @default(uuid())
+  name        String
+  slug        String            @unique
+  description String?
+  imageUrl    String?
+  sortOrder   Int               @default(0)
+  isActive    Boolean           @default(true)
+  programs    TrainingProgram[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([isActive, sortOrder])
+  @@map("program_categories")
+}
+
+model TrainingProgram {
+  id               String            @id @default(uuid())
+  categoryId       String
+  name             String
+  slug             String            @unique
+  shortDescription String?
+  description      String?
+  coverImageUrl    String?
+  level            ProgramLevel      @default(ALL_LEVELS)
+  durationWeeks    Int?
+  sessionsPerWeek  Int?
+  durationMinutes  Int?
+  benefits         Json?
+  schedule         Json?
+  sortOrder        Int               @default(0)
+  status           PublicationStatus @default(DRAFT)
+  publishedAt      DateTime?
+  category         ProgramCategory   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([categoryId, status, sortOrder])
+  @@index([status, publishedAt])
+  @@map("training_programs")
+}
+
+model Club {
+  id            String              @id @default(uuid())
+  name          String
+  slug          String              @unique
+  address       String
+  district      String?
+  city          String
+  phone         String?
+  email         String?
+  description   String?
+  imageUrl      String?
+  gallery       Json?
+  openingHours  Json?
+  latitude      Decimal?            @db.Decimal(9, 6)
+  longitude     Decimal?            @db.Decimal(9, 6)
+  googleMapsUrl String?
+  isActive      Boolean             @default(true)
+  sortOrder     Int                 @default(0)
+  amenities     ClubAmenity[]
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@index([city, isActive])
+  @@index([isActive, sortOrder])
+  @@map("clubs")
+}
+
+model ClubAmenity {
+  id        String  @id @default(uuid())
+  clubId    String
+  name      String
+  icon      String?
+  sortOrder Int     @default(0)
+  club      Club    @relation(fields: [clubId], references: [id], onDelete: Cascade)
+
+  @@unique([clubId, name])
+  @@index([clubId, sortOrder])
+  @@map("club_amenities")
+}
+
+model MembershipPlan {
+  id               String              @id @default(uuid())
+  name             String
+  slug             String              @unique
+  description      String?
+  price            Decimal             @db.Decimal(12, 2)
+  currency         String              @default("VND")
+  billingMonths    Int                 @default(1)
+  commitmentMonths Int?
+  imageUrl         String?
+  isFeatured       Boolean             @default(false)
+  isActive         Boolean             @default(true)
+  sortOrder        Int                 @default(0)
+  features         PlanFeature[]
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@index([isActive, sortOrder])
+  @@map("membership_plans")
+}
+
+model PlanFeature {
+  id         String         @id @default(uuid())
+  planId     String
+  content    String
+  isIncluded Boolean        @default(true)
+  sortOrder  Int            @default(0)
+  plan       MembershipPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId, sortOrder])
+  @@map("plan_features")
+}
+
+model NewsPost {
+  id             String            @id @default(uuid())
+  categoryId     Int?
+  authorId       String
+  title          String
+  slug           String            @unique
+  excerpt        String?
+  content        String
+  coverImageUrl  String?
+  status         PublicationStatus @default(DRAFT)
+  publishedAt    String?
+  seoTitle       String?
+  seoDescription String?
+  viewCount      Int               @default(0)
+  category       Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  author         User              @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  tags           NewsPostTag[]
+  menuLinks      MenuPost[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  isHome         Boolean           @default(false)
+
+  @@index([categoryId, status, publishedAt])
+  @@index([authorId])
+  @@index([status, publishedAt])
+  @@map("news_posts")
+}
+
+model MenuItem {
+  id           String     @id @default(uuid())
+  parentId     String?
+  title        String
+  slug         String     @unique
+  type         MenuType   @default(PAGE)
+  href         String?
+  isExternal   Boolean    @default(false)
+  openInNewTab Boolean    @default(false)
+  isActive     Boolean    @default(true)
+  sortOrder    Int        @default(0)
+  parent       MenuItem?  @relation("MenuHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children     MenuItem[] @relation("MenuHierarchy")
+  posts        MenuPost[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([parentId, isActive, sortOrder])
+  @@map("menu_items")
+}
+
+model MenuPost {
+  menuId    String
+  postId    String
+  sortOrder Int      @default(0)
+  menu      MenuItem @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  post      NewsPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@id([menuId, postId])
+  @@index([postId])
+  @@index([menuId, sortOrder])
+  @@map("menu_posts")
+}
+
+model NewsTag {
+  id        String        @id @default(uuid())
+  name      String
+  slug      String        @unique
+  posts     NewsPostTag[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("news_tags")
+}
+
+model NewsPostTag {
+  postId String
+  tagId  String
+  post   NewsPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag    NewsTag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@index([tagId])
+  @@map("news_post_tags")
+}
+
+model ContactMessage {
+  id        String        @id @default(uuid())
+  name      String
+  email     String?
+  phone     String?
+  subject   String?
+  message   String
+  status    ContactStatus @default(NEW)
+  note      String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([status, createdAt])
+  @@map("contact_messages")
+}
+
+model Promotion {
+  id          Int      @id @default(autoincrement())
+
+  badge       String?
+  title       String
+  discount    String?
+  extra       String?
+  ctaText     String?
+  footerText  String?
+  footerLink  String?
+
+  endDate     DateTime?
+  showOnHome  Boolean  @default(false)
+
+  bgType      BannerBgType @default(GRADIENT)
+  bgFrom      String?
+  bgTo        String?
+  imageUrl    String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([showOnHome])
+  @@index([endDate])
+  @@index([showOnHome, endDate])
+}
+
+model Banner {
+  id          Int      @id @default(autoincrement())
+
+  imageUrl    String?
+  header      String
+  primaryText String
+  description String
+  buttonText  String
+  buttonLink  String?
+
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Category {
+  id       Int     @id @default(autoincrement())
+  name     String
+  slug     String  @unique
+  isActive Boolean @default(true)
+  order     Int       @default(0)
+  newsPosts NewsPost[]
+  parentId Int?
+  parent   Category?  @relation("CategoryChildren", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryChildren")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([parentId])
+}

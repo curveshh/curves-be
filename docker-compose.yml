@@ -1,0 +1,70 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:17-alpine
+
+    container_name: nest-postgres
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+    ports:
+      - '5432:5432'
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - nest-network
+
+  redis:
+    image: redis:7-alpine
+
+    container_name: nest-redis
+
+    restart: unless-stopped
+
+    ports:
+      - '6379:6379'
+
+    volumes:
+      - redis_data:/data
+
+    networks:
+      - nest-network
+
+  api:
+    container_name: nest-api
+
+    restart: unless-stopped
+
+    environment:
+      NODE_ENV: ${NODE_ENV}
+
+      DATABASE_URL: ${DATABASE_URL}
+
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+    depends_on:
+      postgres:
+        condition: service_started
+
+      redis:
+        condition: service_started
+
+    networks:
+      - nest-network
+
+volumes:
+  postgres_data:
+
+  redis_data:
+
+networks:
+  nest-network:

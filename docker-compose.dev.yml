@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+
+      dockerfile: Dockerfile.dev
+
+    ports:
+      - '3000:3000'
+
+    volumes:
+      # mount source
+
+      - .:/app
+
+      # tránh ghi đè node_modules container
+
+      - /app/node_modules
+
+    environment:
+      NODE_ENV: development
+
+    command: pnpm start:dev

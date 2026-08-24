@@ -1,0 +1,92 @@
+{
+  "editor.fontSize": 14,
+  "editor.fontFamily": "JetBrains Mono, Consolas",
+  "editor.fontLigatures": true,
+
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+
+  "editor.wordWrap": "on",
+
+  "editor.minimap.enabled": false,
+
+  "editor.renderWhitespace": "boundary",
+
+  "editor.guides.bracketPairs": true,
+
+  "editor.formatOnSave": true,
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact", "vue"],
+
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "js/ts.updateImportsOnFileMove.enabled": "always",
+
+  "explorer.confirmDelete": false,
+
+  "explorer.confirmDragAndDrop": false,
+
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+
+  "git.autofetch": true,
+
+  "git.confirmSync": false,
+
+  "git.enableSmartCommit": true,
+
+  "editor.inlineSuggest.enabled": true,
+
+  "workbench.iconTheme": "material-icon-theme",
+
+  "workbench.colorTheme": "One Dark Pro Darker",
+  "prisma.pinToPrisma6": true,
+  "claudeCode.disableLoginPrompt": true,
+  "claudeCode.environmentVariables": [
+    { "name": "ANTHROPIC_BASE_URL", "value": "http://localhost:8082" },
+    { "name": "ANTHROPIC_AUTH_TOKEN", "value": "freecc" },
+    { "name": "CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY", "value": "1" },
+    { "name": "CLAUDE_CODE_AUTO_COMPACT_WINDOW", "value": "190000" },
+    { "name": "DISABLE_AUTOUPDATER", "value": "1" },
+    { "name": "DISABLE_FEEDBACK_COMMAND", "value": "1" },
+    { "name": "DISABLE_ERROR_REPORTING", "value": "1" }
+  ]
+}
