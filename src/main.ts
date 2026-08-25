@@ -1,10 +1,10 @@
+import 'reflect-metadata';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { join } from 'node:path';
-import 'reflect-metadata';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './apps/api/common/filters/http-exception';
 
