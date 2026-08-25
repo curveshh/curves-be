@@ -3,9 +3,7 @@ version: '3.9'
 services:
   postgres:
     image: postgres:17-alpine
-
     container_name: nest-postgres
-
     restart: unless-stopped
 
     environment:
@@ -24,9 +22,7 @@ services:
 
   redis:
     image: redis:7-alpine
-
     container_name: nest-redis
-
     restart: unless-stopped
 
     ports:
@@ -39,31 +35,32 @@ services:
       - nest-network
 
   api:
+    image: ghcr.io/USERNAME/nest-api:latest
     container_name: nest-api
-
     restart: unless-stopped
 
     environment:
       NODE_ENV: ${NODE_ENV}
-
       DATABASE_URL: ${DATABASE_URL}
-
       REDIS_HOST: redis
       REDIS_PORT: 6379
+
+    command: sh -c "pnpm prisma migrate deploy && node dist/main.js"
 
     depends_on:
       postgres:
         condition: service_started
-
       redis:
         condition: service_started
+
+    ports:
+      - '3000:3000'
 
     networks:
       - nest-network
 
 volumes:
   postgres_data:
-
   redis_data:
 
 networks:
