@@ -27,11 +27,14 @@ COPY package.json pnpm-lock.yaml ./
 
 RUN pnpm install --prod --frozen-lockfile
 
-# Generate Prisma Client cho runtime
-RUN pnpm prisma generate
+# Copy Prisma Client đã generate từ builder
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
+
+# Nếu có public
+# COPY --from=builder /app/public ./public
 
 EXPOSE 3000
 
