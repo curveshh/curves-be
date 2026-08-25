@@ -27,10 +27,12 @@ COPY package.json pnpm-lock.yaml ./
 
 RUN pnpm install --prod --frozen-lockfile
 
+# Generate Prisma Client cho runtime
+RUN pnpm prisma generate
+
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/public ./public
 
 EXPOSE 3000
 
-CMD ["node", "dist/src/main.js"]
+CMD ["sh", "-c", "pnpm prisma migrate deploy && node dist/src/main.js"]
