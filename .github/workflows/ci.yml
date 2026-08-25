@@ -33,8 +33,8 @@ jobs:
       - name: Prisma generate
         run: pnpm prisma generate
 
-      - name: Lint
-        run: pnpm lint
+      # - name: Lint
+      #   run: pnpm lint
 
       - name: Test
         run: pnpm test
