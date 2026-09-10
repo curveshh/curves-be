@@ -26,4 +26,14 @@ export const envValidation = Joi.object({
   SWAGGER_VERSION: Joi.string().required(),
 
   SWAGGER_PATH: Joi.string().required(),
+
+  FACEBOOK_PAGE_ID: Joi.string().optional(),
+
+  FACEBOOK_PAGE_ACCESS_TOKEN: Joi.string().optional(),
+
+  FACEBOOK_VERIFY_TOKEN: Joi.string().optional(),
+
+  FACEBOOK_GRAPH_VERSION: Joi.string().optional(),
+
+  ZALO_OA_ACCESS_TOKEN: Joi.string().optional(),
 });
