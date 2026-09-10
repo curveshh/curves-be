@@ -16,7 +16,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000', // Next.js web
-      'http://localhost:8081', // Expo web (nếu có)
+      'https://curves-fe.vercel.app', // Expo web (nếu có)
     ],
     credentials: true, // nếu dùng cookie JWT
   });
