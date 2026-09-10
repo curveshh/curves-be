@@ -24,4 +24,16 @@ export default () => ({
     version: process.env.SWAGGER_VERSION,
     path: process.env.SWAGGER_PATH,
   },
+
+  messenger: {
+    facebook: {
+      pageId: process.env.FACEBOOK_PAGE_ID,
+      pageAccessToken: process.env.FACEBOOK_PAGE_ACCESS_TOKEN,
+      verifyToken: process.env.FACEBOOK_VERIFY_TOKEN,
+      graphVersion: process.env.FACEBOOK_GRAPH_VERSION ?? 'v22.0',
+    },
+    zalo: {
+      oaAccessToken: process.env.ZALO_OA_ACCESS_TOKEN,
+    },
+  },
 });
