@@ -14,11 +14,10 @@ async function bootstrap() {
   app.useStaticAssets(join(process.cwd(), 'public'));
 
   app.enableCors({
-    origin: [
-      'http://localhost:3000', // Next.js web
-      'https://curves-fe.vercel.app', // Expo web (nếu có)
-    ],
-    credentials: true, // nếu dùng cookie JWT
+    origin: ['http://localhost:3000', 'https://curves-fe.vercel.app'],
+    credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   app.use(cookieParser());
